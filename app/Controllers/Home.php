@@ -20,8 +20,13 @@ class Home extends BaseController
 		if ($this->request->getMethod() !== 'post') {
 			return View('login');
 		}else{
+			$passArray = json_decode(file_get_contents(APPPATH.'../json/access.json'),true);
+			$passArray = array_map(function ($p){
+				return $p['pass'];
+			},$passArray);
+
 			$pass =$this->request->getVar('password');
-			if($pass === 'Orion1914')
+			if(in_array($pass,$passArray))
 			{
 				session()->set(['loggedIn' =>true]);
 			}
