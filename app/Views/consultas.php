@@ -1,4 +1,4 @@
-<?php $this->extend('layouts\default.php'); ?>
+<?php $this->extend('layout'); ?>
 
 <?php $this->section('content'); ?>
 <a href="<?php echo base_url() ?>">
@@ -85,19 +85,20 @@ $(document).ready(function(){
 })
 
 function tabla(){
+  $('#tabla').DataTable().destroy();
     $.ajax({
-            url:'<?php echo base_url()  ?>/Home/getConsultas',
+            url:'<?php echo base_url('/Home/getConsultas')  ?>',
             method: 'get',
            async: false,
             success: function(response){
-                consultas = JSON.parse(JSON.parse(response));
+                consultas =JSON.parse(response);
                 $('#tabla').DataTable( {
-                data: JSON.parse(JSON.parse(response)),
+                data: consultas,
                 columns: [
                     { data: 'id' },
                     { data: 'nombreConsulta' },
                     { data: 'descripcion' },
-                    { data: 'id',render:function ( data, type, row, meta ) {
+                    { data: 'id',render:function ( data ) {
                     return '<button class="update btn btn-primary" value="'+data+'">Editar</button> <button class="copy btn btn-secondary" value="'+data+'">Copiar</button>';
                     } 
                     },
@@ -108,7 +109,7 @@ function tabla(){
             })
 }
 function copiar() {
-    var id = $(this).val();
+    var id = $(this).val()-1;
     let consulta = consultas[id];
     var dummy = $('<input>').val(consulta.consulta).appendTo('#porta').select()
     document.execCommand('copy');
@@ -116,7 +117,8 @@ function copiar() {
   alert("Consulta copiada al portapapeles.");
 }
 function editar(){
-    var id = $(this).val();
+    var id = $(this).val()-1;
+    console.log(id);
     let consulta = consultas[id];
     $("#saveAs").val(consulta.nombreConsulta);
     $("#details").val(consulta.descripcion);
@@ -147,7 +149,7 @@ $("#btnSaveQuery").click(()=>{
             consulta        : consulta,
             id              : id
         };
-    
+  
     $.ajax({
             url:'<?php echo base_url()  ?>/Home/updateConsulta',
             method: 'post',

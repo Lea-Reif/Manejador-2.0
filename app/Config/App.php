@@ -21,7 +21,7 @@ class App extends BaseConfig
 	| environments.
 	|
 	*/
-	public $baseURL = 'http://manejador.test/';
+	public $baseURL = 'https://manejador2.test/';
 
 	/*
 	|--------------------------------------------------------------------------

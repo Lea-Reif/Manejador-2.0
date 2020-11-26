@@ -1,4 +1,4 @@
-<?php $this->extend('layouts\default.php'); ?>
+<?php $this->extend('layout'); ?>
 
 <?php $this->section('content'); ?>
 
@@ -107,7 +107,7 @@
         <button class="btn btn-secondary" id="guardar">Guardar consulta</button>
         <br>
         <br>
-        <a href="<?php echo base_url() ?>/Home/consultas" target="_blank">
+        <a href="<?php echo base_url('/Home/consultas') ?>" target="_blank">
           <button class="btn btn-primary">Ver Consultas Guardadas</button>
         </a>
       </div>
@@ -134,7 +134,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="http://localhost/InstanceManagementApp/" method="post" class="form-horizontal" id="form1">
+            <form  method="post" class="form-horizontal" id="form1">
               <div class="container">
                 <div class="form-group row">
                   <div class="col">
@@ -229,7 +229,7 @@
 
 
           $.ajax({
-            url: '<?php echo base_url()  ?>/Home/saveConsulta',
+            url: '<?php echo base_url('/Home/saveConsulta')  ?>',
             method: 'post',
             data: obj,
             dataType: 'json',
@@ -249,7 +249,7 @@
           return
         }
         $.ajax({
-          url: '<?php echo base_url()  ?>/Home/updateGroups',
+          url: '<?php echo base_url('/Home/updateGroups')  ?>',
           method: 'post',
           data: data,
           dataType: 'json',
@@ -275,7 +275,7 @@
           query: $('#query').val()
         };
         $.ajax({
-          url: '<?php echo base_url();  ?>/Home/ejecutar',
+          url: '<?php echo base_url('/Home/ejecutar');  ?>',
           method: 'post',
           data: data,
           dataType: 'json',

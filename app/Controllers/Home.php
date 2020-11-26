@@ -30,7 +30,7 @@ class Home extends BaseController
 			{
 				session()->set(['loggedIn' =>true]);
 			}
-			return $this->response->redirect('/Home');
+			return $this->response->redirect(base_url('/Home'));
 		}
 
 	}
@@ -38,7 +38,7 @@ class Home extends BaseController
 	public function logout()
 	{
 		session()->destroy();
-		return $this->response->redirect('/Home');
+		return $this->response->redirect(base_url('/Home'));
 	}
 	public function index()
 	{
@@ -191,15 +191,14 @@ class Home extends BaseController
 
     public function updateConsulta(){
 
-        $postData = json_encode($this->request->getPost());
-        $json_file = json_decode($this->manModel->getConsultas(),true);
-        $data = json_decode($postData,true);
-        $consultas= $json_file;
+		$datos = $this->request->getPost();
+		$id = $datos['id'];
+		$consultas= $this->manModel->getConsultas();
         $array_final=[];
-        foreach ($consultas as $consulta) {
-            if($consulta['id'] == $data['id']){
-                unset($data['id']);
-                array_push($array_final,$data);
+        foreach ($consultas as  $consulta) {
+			if($consulta['id'] == $id){
+                unset($datos['id']);
+                array_push($array_final,$datos);
             }else{
                 unset($consulta['id']);
                 array_push($array_final,$consulta);
@@ -210,7 +209,9 @@ class Home extends BaseController
 
         $final_data = json_encode($array_final);
 		file_put_contents(APPPATH.'../json/consultas.json', $final_data);
-        return print_r($array_final);
+		$consultas= $this->manModel->getConsultas();
+
+        exit('0');
 
     }
 

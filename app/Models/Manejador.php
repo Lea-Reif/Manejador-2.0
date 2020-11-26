@@ -16,13 +16,13 @@ class Manejador extends Model
      function getConsultas(){
         
         $str = file_get_contents(APPPATH.'../json/consultas.json');
-        $json = json_decode($str);
+        $json = json_decode($str,true);
         foreach ($json as $key => $db) {
-                    $db->id= $key;
-    
+                    $db['id']= $key+1;
+                  $json[$key] = $db;
                 }
         
-       return json_encode($json);
+       return $json;
      }
     
      function getGroups(){

@@ -33,9 +33,12 @@ class BaseController extends Controller
 	 */
 	private function checkSession()
 	{
-		if(!session()->get('loggedIn') && uri_string() !== 'login' )
+
+		if(!session()->get('loggedIn') && current_url() !== base_url('/login') )
 		{
-			return $this->response->redirect('login');
+			// header('Location: '.base_url('/login'));
+			// exit(); 
+			return $this->response->redirect(base_url('/login'));
 		}
 	}
 	public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
