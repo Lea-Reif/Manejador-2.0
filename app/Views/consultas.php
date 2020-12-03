@@ -79,6 +79,7 @@ var consultas;
 $(document).ready(function(){
     $(document).on('click','.update',editar);
     $(document).on('click','.copy',copiar);
+    $(document).on('click','.delete',eliminar);
 
     tabla();        
             
@@ -92,6 +93,7 @@ function tabla(){
            async: false,
             success: function(response){
                 consultas =JSON.parse(response);
+                console.log(consultas);
                 $('#tabla').DataTable( {
                 data: consultas,
                 columns: [
@@ -99,7 +101,7 @@ function tabla(){
                     { data: 'nombreConsulta' },
                     { data: 'descripcion' },
                     { data: 'id',render:function ( data ) {
-                    return '<button class="update btn btn-primary" value="'+data+'">Editar</button> <button class="copy btn btn-secondary" value="'+data+'">Copiar</button>';
+                    return '<button class="delete btn btn-warning" value="'+data+'">Borrar</button><button class="update btn btn-primary" value="'+data+'">Editar</button> <button class="copy btn btn-secondary" value="'+data+'">Copiar</button>';
                     } 
                     },
                 ]
@@ -127,6 +129,25 @@ function editar(){
     $("#consulta_id").val(consulta.id);
     $('#modalSave').modal('show');
 
+}
+function eliminar(){
+  var id = $(this).val()-1;
+  let consulta = consultas[id];
+  let val = confirm(`¿Desea borrar la consulta '${consulta.nombreConsulta}'?`);
+  let obj = {
+    id : id
+  };
+
+  $.ajax({
+    url:'<?php echo base_url()  ?>/Home/deleteConsulta',
+    method: 'post',
+    data: obj,
+    dataType: 'json',
+    success: function(data){
+      tabla();
+      alert('Consulta eliminada correctamente');
+    }
+  })
 }
 
 
@@ -159,7 +180,6 @@ $("#btnSaveQuery").click(()=>{
              tabla();
              alert('Actualizado correctamente');
              $('#modalSave').modal('hide');
-
             }
         
             })

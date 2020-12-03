@@ -234,6 +234,7 @@
             data: obj,
             dataType: 'json',
             success: function(data) {
+              alert('¡Consulta guardada con exito!');
               $('#modalSave').modal('hide');
             }
 

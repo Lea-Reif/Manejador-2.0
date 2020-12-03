@@ -8,13 +8,13 @@
 
 	<link rel="stylesheet" href="<?php echo base_url('/css/bootstrap.min.css');?>"/>
 
-	<link rel="stylesheet" type="text/css" href="<?php echo base_url('/DataTables/datatables.min.css');?>"" />
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('/DataTables/datatables.min.css');?>" />
 	<script src="<?php echo base_url('/js/jquery-3.4.1.min.js');?>"></script>
 	<script src="<?php echo base_url('/js/popper.min.js');?>"></script></script>
 	<script src="<?php echo base_url('/js/bootstrap.min.js');?>"></script>
 
-	<script src="<?php echo base_url('/js/bootstrap-select.min.js');?>""></script>
-	<script type="text/javascript" src="<?php echo base_url('/DataTables/datatables.min.js');?>""></script>
+	<script src="<?php echo base_url('/js/bootstrap-select.min.js');?>"></script>
+	<script type="text/javascript" src="<?php echo base_url('/DataTables/datatables.min.js');?>"></script>
 
 	<style>
 	body {
