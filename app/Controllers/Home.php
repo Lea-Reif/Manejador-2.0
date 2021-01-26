@@ -83,7 +83,23 @@ class Home extends BaseController
 		sort($data['id'], SORT_NUMERIC);
 		$this->response->setHeader('Content-Type', 'application/json');
 
-		if (strstr($data['query'], "CREATE PROCEDURE")) {
+		if (strstr($data['query'], "CREATE")) {
+			$query = $data['query'];
+			$type = strtoupper(explode(' ', trim(substr($query, strpos($query, 'CREATE') + strlen('CREATE'), 10)))[0]);
+
+			switch ($type) {
+				case 'TRIGGER':
+					preg_match("/(AFTER|BEFORE)/",$query,$math);
+					$nombre_proc = $this->string_between_two_string($data['query'], "CREATE {$type}", $math[0]);
+					break;
+				case 'PROCEDURE':
+					$nombre_proc = $this->string_between_two_string($data['query'], "CREATE {$type}", '(');
+					break;
+				default:
+					goto next;
+					break;
+			}
+			$dropStmt = "DROP {$type} {$nombre_proc}";
 			foreach ($data['id'] as  $id) {
 				$id = intval($id);
 				$db = $json_file[$id];
@@ -94,8 +110,7 @@ class Home extends BaseController
 				$config['DBDriver'] = 'mysqli';
 				$dbConn = db_connect($config);
 
-				$nombre_proc = $this->string_between_two_string($data['query'], "CREATE  PROCEDURE", '(');
-				$dbConn->query("DROP PROCEDURE IF EXISTS $nombre_proc");
+				$dbConn->query($dropStmt);
 				$dbConn->query($data['query']);
 				if ($dbConn->error()['code'] !== 0) {
 					$errores[] = "Error en la db $db->name: " . $dbConn->error()['message'];
@@ -104,6 +119,7 @@ class Home extends BaseController
 				}
 			}
 		} else {
+			next:
 			$queries = explode(';', $data['query']);
 
 			foreach ($queries as  $query) {
@@ -223,7 +239,7 @@ class Home extends BaseController
 
 		exit('0');
 	}
-	
+
 	public function deleteConsulta()
 	{
 		$datos = $this->request->getPost();
@@ -231,12 +247,11 @@ class Home extends BaseController
 		$consultas = $this->manModel->getConsultas(false);
 		unset($consultas[$id]);
 		$array_final = [];
-		$consultas = array_map(function ($c) use (&$array_final)
-		{
+		$consultas = array_map(function ($c) use (&$array_final) {
 			unset($c['id']);
 			$array_final[] = $c;
 			return $c;
-		},$consultas);
+		}, $consultas);
 		file_put_contents(APPPATH . '../json/consultas.json', json_encode($array_final));
 		exit('0');
 	}

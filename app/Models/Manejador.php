@@ -54,7 +54,7 @@ class Manejador extends Model
        function updateGroups($data)
        {
           extract($data);
-          $dbs = json_decode($this->getDb());
+          $dbs = $this->getDb();
           foreach ($dbs as $key => $db) {
              if(in_array($db->id,$ids))$dbs[$key]->group = $new;
                 unset($dbs[$key]->id);
