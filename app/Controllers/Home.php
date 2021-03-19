@@ -261,4 +261,8 @@ class Home extends BaseController
 		$this->manModel->updateGroups($this->request->getPost());
 		exit();
 	}
+	public function addDb()
+	{
+		exit($this->manModel->addDb($this->request->getPost()));
+	}
 }

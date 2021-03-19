@@ -55,7 +55,7 @@
     <select class="selectpicker " required name="conns[]" multiple data-live-search="true" data-actions-box="true" id="conn">
 
       <?php foreach ($dbs as $index => $groups) { ?>
-        <optgroup label="<?php echo $index ?>">
+        <optgroup label="<?php echo $index ?>" data-group="<?php echo $index ?>">
           <?php foreach ($groups as $db) { ?>
             <option value="<?php echo $db->id ?>"><?php echo $db->db ?></option>
           <?php } ?>
@@ -81,7 +81,7 @@
             <label for="ids">Seleccione las DB's para agrupar
               <select class="selectpicker " required name="ids[]" multiple data-live-search="true" data-actions-box="true" id="ids">
                 <?php foreach ($dbs as $index => $groups) { ?>
-                  <optgroup label="<?php echo $index ?>">
+                  <optgroup label="<?php echo $index ?>" data-group="<?php echo $index ?>">
                     <?php foreach ($groups as $db) { ?>
                       <option value="<?php echo $db->id ?>"><?php echo $db->db ?></option>
                     <?php } ?>
@@ -105,6 +105,8 @@
     <button class="btn btn-success " id="ejecutar">Ejecutar consulta</button>
     <br><br>
     <button class="btn btn-secondary" id="guardar">Guardar consulta</button>
+    <br>
+    <button class="btn btn-warning" data-toggle="modal" data-target="#modal-add-db">Agregar Base de Datos</button>
     <br>
     <br>
     <a href="<?php echo base_url('/Home/consultas') ?>" target="_blank">
@@ -144,7 +146,7 @@
         <h5>Funciones de mysql (Procedures, Triggers y demás):</h5>
         <p>Las consultas para crear funciones internas de MySQL, deben realizarse solas en el area de texto, o ejecutarse por separado seleccionandolas y tampoco deben incluir los DELIMITERS caracteristicos de la consola:(Siempre que se ejecute un CREATE, se va a eliminar el objeto anterior)</p>
         <code>
-        <pre>
+          <pre>
           DELIMITER //
 
           CREATE PROCEDURE GetAllProducts()
@@ -157,7 +159,7 @@
         </code>
         <p>Quedaría como:</p>
         <code>
-        <pre>
+          <pre>
           CREATE PROCEDURE GetAllProducts()
           BEGIN
             SELECT *  FROM products;
@@ -221,11 +223,85 @@
   </div>
 </div>
 <!-- END MODAL SAVE -->
+<!-- MODAL ADD DB -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-add-db">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Añadir DB</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="formAddDb">
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Alias</label>
+                <input type="text" class="form-control" name="db">
+              </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Nombre de la DB</label>
+                <input type="text" class="form-control" name="name">
+              </div>            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Usuario</label>
+                <input type="text" class="form-control" name="user">
+              </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Contraseña</label>
+                <input type="password" class="form-control" name="pass">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Servidor(host)</label>
+                <input type="text" class="form-control" name="host">
+              </div>
+            </div>
+            <div class="col-md-4">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Puerto</label>
+                <input type="number" class="form-control" min="0" name="port" value="3306">
+              </div>
+            </div>
+          </div>
+          <br>
+          <label>Grupo </label>
+          <select name="group" id="select-group" class="selectpicker">
+            <?php foreach ($dbs as $index => $groups) : ?>
+              <option value="<?php echo $index ?>"><?php echo $index ?></option>
+            <?php endforeach; ?>
+          </select>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnSubmitAdd">Guardar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL ADD DB -->
+
 <script>
   $(document).ready(() => {
     $(".alert").hide();
 
   })
+
+
 
   $("textarea").keydown(function(e) {
     if (e.keyCode === 9) { // tab was pressed
@@ -256,7 +332,28 @@
 
   });
 
+  $('#btnSubmitAdd').on('click',function(){
+    var dataFake = $('#formAddDb').serializeArray(),data = {};
+    for(let val of dataFake)data[val.name] = val.value;
+    addDB(data);
+    
+  })
+  function addDB(data) {
+    $(`#conn > [data-group="${data.group}"]`).append(`<option value="${data.db}">${data.db}</option>`);
+    $('.selectpicker').selectpicker('refresh');
+    $.ajax({
+      url: '<?php echo base_url('/Home/addDb')  ?>',
+      method: 'post',
+      data: data,
+      dataType: 'json',
+      success: function(data) {
+        alert('Base de Datos ingresada con Exito');
+        $('.modal').modal('hide')
+        window.location.href = window.location.href;
+      },
 
+    })
+  }
 
   $("#guardar").click(() => {
     $("#queryInfo").val($('#query').val());
@@ -323,7 +420,7 @@
 
   $('#ejecutar').on('click', () => {
     var select = isTextSelected($('#query')[0]);
-    if($('#query').val().trim() === "")
+    if ($('#query').val().trim() === "")
       return alert('Consulta Vacía');
     $('.loader').css('display', 'block');
     $('#mensajes').empty();
@@ -383,22 +480,22 @@
   });
 
   function isTextSelected(input) {
-   var startPos = input.selectionStart;
-   var endPos = input.selectionEnd;
+    var startPos = input.selectionStart;
+    var endPos = input.selectionEnd;
 
-   var selObj = document.getSelection(); 
-   var selectedText = selObj.toString();
-   
-   if (selectedText.length != 0) {
+    var selObj = document.getSelection();
+    var selectedText = selObj.toString();
+
+    if (selectedText.length != 0) {
       input.focus();
       input.setSelectionRange(startPos, endPos);
       return selectedText;
-   } else if (input.value.substring(startPos, endPos).length != 0) {
+    } else if (input.value.substring(startPos, endPos).length != 0) {
       input.focus();
       input.setSelectionRange(startPos, endPos);
       return selectedText;
-   }
-   return false;
-}
+    }
+    return false;
+  }
 </script>
 <?php $this->endSection() ?>

@@ -50,6 +50,18 @@ class Manejador extends Model
         return print_r($final_data);
      
      }
+     function addDB($data){
+    
+        $dbs = file_get_contents(APPPATH.'../json/db.json');  
+        $dbs_array = json_decode($dbs, true);  
+        $extra = $data;
+        $dbs_array[] = $extra;  
+        $final_data = json_encode($dbs_array,JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        file_put_contents(APPPATH.'../json/db.json', $final_data);
+    
+        return '{"consulta":"completado con exito"}';
+     
+     }
     
        function updateGroups($data)
        {
