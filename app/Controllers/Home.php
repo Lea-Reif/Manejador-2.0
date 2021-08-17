@@ -261,8 +261,13 @@ class Home extends BaseController
 		$this->manModel->updateGroups($this->request->getPost());
 		exit();
 	}
+	
 	public function addDb()
 	{
+		$llaves = ["name", "user", "pass", "host", "port", "group"];
+		$datos = $this->request->getPost();
+
+		if( empty($datos) || !empty( array_diff( $llaves, array_keys($datos) ) ) ) exit('{"consulta":"error al completar la consulta"}');
 		exit($this->manModel->addDb($this->request->getPost()));
 	}
 }
