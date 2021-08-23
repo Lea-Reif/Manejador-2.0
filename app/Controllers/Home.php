@@ -53,8 +53,11 @@ class Home extends BaseController
 
 	function getTable($query)
 	{
-		$query = explode("from", $query);
-		$query = explode(" ", $query[1]);
+		$splited_query = explode("from", $query);
+		if( count($splited_query) == 1 )  $splited_query = explode("FROM", $query) ;
+		
+		if( count($splited_query) == 1 ) return $query;
+		$query = explode(" ", $splited_query[1]);
 		$query = (strpos($query[1], ';') !== false) ? $query : explode(";", $query[1])[0];
 		return $query;
 	}
@@ -113,9 +116,9 @@ class Home extends BaseController
 				$dbConn->query($dropStmt);
 				$dbConn->query($data['query']);
 				if ($dbConn->error()['code'] !== 0) {
-					$errores[] = "Error en la db $db->name: " . $dbConn->error()['message'];
+					$errores[] = "Error en la db $db->db: " . $dbConn->error()['message'];
 				} else {
-					$correctas[] = $db->name . " correcto";
+					$correctas[] = $db->db . " correcto";
 				}
 			}
 		} else {
@@ -124,6 +127,7 @@ class Home extends BaseController
 
 			foreach ($queries as  $query) {
 				$query = ltrim($query);
+				if ($query == "") continue;
 				foreach ($data['id'] as  $id) {
 					$id = intval($id);
 					$db = $json_file[$id];
@@ -134,11 +138,10 @@ class Home extends BaseController
 					$config['DBDriver'] = 'mysqli';
 					$dbConn = db_connect($config);
 
-					if ($query == "") continue;
 					try {
 						$select = $dbConn->query($query);
 					} catch (DatabaseException $e) {
-						$errores[] = "Error en la db $db->name : Innacesible";
+						$errores[] = "Error en la db $db->db : Innacesible";
 						continue;
 					}
 					if ($dbConn->error()['code']) {
@@ -146,10 +149,10 @@ class Home extends BaseController
 						continue;
 					}
 					if ($select->connID->field_count === 0 &&  count($select->getResultArray()) === 0) {
-						$correctas[] = $db->name . ". correcto";
+						$correctas[] = $db->db . ". correcto";
 						continue;
 					} else {
-						$table = '<div class="card strpied-tabled-with-hover"><h4 align="center" class="card-title">Datos desde ' . $db->name . '</h4>';
+						$table = '<div class="card strpied-tabled-with-hover"><h4 align="center" class="card-title">Datos desde ' . $db->db . '</h4>';
 
 						$tbl = strstr((strtolower($query)), "select") == true ? $this->getTable($query) : $query;
 						$select = $select->getResultArray();
@@ -264,7 +267,7 @@ class Home extends BaseController
 	
 	public function addDb()
 	{
-		$llaves = ["name", "user", "pass", "host", "port", "group"];
+		$llaves = ["name", "user", "pass", "host", "port", "group", "db"];
 		$datos = $this->request->getPost();
 
 		if( empty($datos) || !empty( array_diff( $llaves, array_keys($datos) ) ) ) exit('{"consulta":"error al completar la consulta"}');
