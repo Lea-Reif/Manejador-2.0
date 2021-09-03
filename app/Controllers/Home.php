@@ -10,7 +10,9 @@ class Home extends BaseController
 
 	public function __construct()
 	{
-		// parent::__construct();
+		header('Access-Control-Allow-Origin: *');
+		header("Access-Control-Allow-Headers: Origin, X-Requested-With, x-api-key, Content-Type, Accept, Authorization");
+		header('Access-Control-Allow-Methods: GET, POST');
 		$this->manModel = new Manejador();
 	}
 
