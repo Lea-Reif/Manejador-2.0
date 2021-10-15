@@ -100,6 +100,9 @@ class Home extends BaseController
 				case 'PROCEDURE':
 					$nombre_proc = $this->string_between_two_string($data['query'], "CREATE {$type}", '(');
 					break;
+				case 'FUNCTION':
+					$nombre_proc = $this->string_between_two_string($data['query'], "CREATE {$type}", '(');
+					break;
 				default:
 					goto next;
 					break;
