@@ -52,7 +52,7 @@
 
   <div class="float-left border" style=" height: 15em;">
     <h4 align="center">Instancias</h4>
-    <select class="selectpicker " required name="conns[]" multiple data-live-search="true" data-actions-box="true" id="conn">
+    <select class="selectpicker " data-selected-text-format="count" required name="conns[]" multiple data-live-search="true" data-actions-box="true" id="conn">
 
       <?php foreach ($dbs as $index => $groups) { ?>
         <optgroup label="<?php echo $index ?>" data-group="<?php echo $index ?>">
@@ -79,7 +79,7 @@
         <div class="modal-body">
           <form id="formGroups">
             <label for="ids">Seleccione las DB's para agrupar
-              <select class="selectpicker " required name="ids[]" multiple data-live-search="true" data-actions-box="true" id="ids">
+              <select class="selectpicker" required name="ids[]" multiple data-live-search="true" data-actions-box="true" id="ids">
                 <?php foreach ($dbs as $index => $groups) { ?>
                   <optgroup label="<?php echo $index ?>" data-group="<?php echo $index ?>">
                     <?php foreach ($groups as $db) { ?>

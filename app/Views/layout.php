@@ -13,7 +13,7 @@
 	<script src="<?php echo base_url('/js/popper.min.js');?>"></script></script>
 	<script src="<?php echo base_url('/js/bootstrap.min.js');?>"></script>
 
-	<script src="<?php echo base_url('/js/bootstrap-select.min.js');?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('/DataTables/datatables.min.js');?>"></script>
 
 	<style>
@@ -21,7 +21,7 @@
 		background-color: lightslategray;
 	}
 	</style>
-	<link rel="stylesheet" href="<?php echo base_url('/css/bootstrap-select.min.css');?>"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
 	<!-- Latest compiled and minified JavaScript -->
 </head>
