@@ -4,7 +4,7 @@ use CodeIgniter\Model;
 
 class Manejador extends Model
 {
-    function getDb(){
+    public static function getDb(){
         $str = file_get_contents(APPPATH.'../json/db.json');
             $json = json_decode($str);
             foreach ($json as $key => $db) {
