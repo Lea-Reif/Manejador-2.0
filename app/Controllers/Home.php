@@ -90,9 +90,17 @@ class Home extends BaseController
 
 		if (strstr($data['query'], "CREATE")) {
 			$query = $data['query'];
-			$type = strtoupper(explode(' ', trim(substr($query, strpos($query, 'CREATE') + strlen('CREATE'), 10)))[0]);
+            $type = strtok($query, " ");
+            if($type === 'CREATE'){
+                $type = strtok(" ");
+            }else{
+                do{
+                    $type = strtok(" ");
+                    $next_is_type = $type === 'CREATE';
+                }while(empty($next_is_type));
+            }
 
-			switch ($type) {
+            switch ($type) {
 				case 'TRIGGER':
 					preg_match("/(AFTER|BEFORE)/",$query,$math);
 					$nombre_proc = $this->string_between_two_string($data['query'], "CREATE {$type}", $math[0]);
